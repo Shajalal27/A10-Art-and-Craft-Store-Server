@@ -28,6 +28,14 @@ async function run() {
 
     const artCollection = client.db('artcraftDB').collection('addCraft');
 
+
+    app.get('/addCraft', async(req, res) =>{
+      const cursor = artCollection.find();
+      const result = await cursor.toArray();
+      res.send(result);
+    })
+
+
     app.post('/addCraft', async(req, res) =>{
       const newCratItem = req.body;
       console.log(newCratItem);
