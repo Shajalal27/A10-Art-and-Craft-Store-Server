@@ -35,6 +35,12 @@ async function run() {
       res.send(result);
     })
 
+    app.get('/addCraft/:id', async(req, res) =>{
+      const id = req.params.id;
+      const query = { _id: new ObjectId(id)}
+      const result = await artCollection.findOne(query);
+      res.send(result);
+    })
 
     app.post('/addCraft', async(req, res) =>{
       const newCratItem = req.body;
