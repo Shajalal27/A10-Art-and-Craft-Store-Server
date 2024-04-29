@@ -1,7 +1,7 @@
 const express = require('express');
 const cors = require('cors');
 require('dotenv').config();
-const { MongoClient, ServerApiVersion } = require('mongodb');
+const { MongoClient, ServerApiVersion, ObjectId } = require('mongodb');
 const app = express();
 const port = process.env.PORT || 5000;
 
@@ -40,6 +40,13 @@ async function run() {
       const newCratItem = req.body;
       console.log(newCratItem);
       const result = await artCollection.insertOne(newCratItem);
+      res.send(result);
+    })
+
+    app.delete('/addCraft/:id', async(req, res) =>{
+      const id = req.params.id;
+      const query = { _id: new ObjectId(id)}
+      const result = await artCollection.deleteOne(query);
       res.send(result);
     })
 
