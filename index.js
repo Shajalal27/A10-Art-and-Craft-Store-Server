@@ -27,6 +27,8 @@ async function run() {
     await client.connect();
 
     const artCollection = client.db('artcraftDB').collection('addCraft');
+    const categoriesCollection = client.db('artcraftDB').collection('categories');
+    const itemsCollection = client.db('artcraftDB').collection('items');
 
 
     app.get('/addCraft', async(req, res) =>{
@@ -42,6 +44,25 @@ async function run() {
       res.send(result);
     })
 
+     //subcategory
+    app.get('/categories', async (req, res) =>{
+      const categories = await categoriesCollection.find().toArray();
+      res.send(categories);
+    })
+
+    app.get('/categories/:subcategory', async (req, res) =>{
+      const{subcategory} = req.params;
+      const items = await artCollection.find({subcategory_name:subcategory}).toArray();
+      res.send(items);
+    })
+
+    app.get('/addCraft/:id', async (req, res) =>{
+      const { id } = req.params;
+      const item = await artCollection.findOne({_id: parseInt(id)});
+      res.send(item);
+    })
+
+
     app.post('/addCraft', async(req, res) =>{
       const newCratItem = req.body;
       console.log(newCratItem);
@@ -56,7 +77,7 @@ async function run() {
       const updateCraftItem = req.body;
       const updateCraft = {
         $set: {
-          photo: updateCraftItem.name, 
+          photo: updateCraftItem.photo, 
           item_name: updateCraftItem.item_name, 
           subcategory_name: updateCraftItem.subcategory_name, 
           description: updateCraftItem.description,
@@ -80,6 +101,9 @@ async function run() {
       res.send(result);
     })
 
+   
+    
+
     // Send a ping to confirm a successful connection
     await client.db("admin").command({ ping: 1 });
     console.log("Pinged your deployment. You successfully connected to MongoDB!");
@@ -89,7 +113,6 @@ async function run() {
   }
 }
 run().catch(console.dir);
-
 
 
 app.get('/', (req, res) =>{
